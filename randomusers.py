@@ -580,7 +580,14 @@ def get_full_names(data: dict) -> list[str]:
     Returns:
         list[str]: List of full names.
     """
-    pass
+    result = list(
+        map(
+        lambda d: f"""{d["name"]["first"]}, {d["name"]["last"]}""",
+        data["results"]
+        )
+    )
+    
+    return result
 
 
 def get_users_by_country(data: dict, country: str) -> list[dict]:
@@ -594,7 +601,12 @@ def get_users_by_country(data: dict, country: str) -> list[dict]:
     Returns:
         list[dict]: List of dictionaries containing full name and email of matching users.
     """
-    pass
+    result = filter(
+        lambda d: d["location"]["country"] == country,
+        data["results"]
+    )
+
+    return list(result)
 
 
 def count_users_by_gender(data: dict) -> dict:
@@ -607,7 +619,15 @@ def count_users_by_gender(data: dict) -> dict:
     Returns:
         dict: Dictionary with gender as keys and count as values.
     """
-    pass
+    result = {"male": 0, "female": 0}
+    x = map(
+        lambda d: d["gander"],
+        data["results"]
+    )
+    for y in x:
+        result[y] += 1
+
+    return result
 
 
 def get_emails_of_older_than(data: dict, age: int) -> list[str]:
@@ -621,7 +641,11 @@ def get_emails_of_older_than(data: dict, age: int) -> list[str]:
     Returns:
         list[str]: List of email addresses.
     """
-    pass
+    x = filter(
+        lambda d: d["dob"]["age"] > age,
+        data["results"]
+    )
+    return list(map(lambda d: d["email"], x))
 
 
 def sort_users_by_age(data: dict, descending: bool = False) -> list[dict]:
@@ -635,7 +659,14 @@ def sort_users_by_age(data: dict, descending: bool = False) -> list[dict]:
     Returns:
         list[dict]: List of users with name and age sorted accordingly.
     """
-    pass
+    x = sorted(data["results"], key=lambda e: e["dob"]["age"], reverse=descending)
+    return [
+        {
+           "name": f"{e['name']['first']} {e['name']['last']}",
+           "age": e["dob"]["age"]
+        } 
+        for e in x
+    ]
 
 
 def get_usernames_starting_with(data: dict, letter: str) -> list[str]:
@@ -649,7 +680,11 @@ def get_usernames_starting_with(data: dict, letter: str) -> list[str]:
     Returns:
         list[str]: List of matching usernames.
     """
-    pass
+    x = filter(
+        lambda e: e["login"]["username"].startswith(letter),
+        data["results"]
+    )
+    return [e["login"]["username"] for e in x]
 
 
 def get_average_age(data: dict) -> float:
@@ -662,7 +697,14 @@ def get_average_age(data: dict) -> float:
     Returns:
         float: Average age.
     """
-    pass
+    x = list(map(
+        lambda e: e["dob"]["age"],
+        data["results"]
+    ))
+    b = 0
+    for i in x:
+        b += i
+    return b / len(x)
 
 
 def group_users_by_nationality(data: dict) -> dict:
